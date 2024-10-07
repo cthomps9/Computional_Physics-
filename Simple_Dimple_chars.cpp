@@ -1,0 +1,34 @@
+//  file: Simple_Dimple_chars.cpp:  
+//
+//  run a simple model of a dimple height porgfile as a function of position.                                                                   
+//
+//  Programmer:  Cristopher Thompson  thompson.3962@osu.edu
+//
+//  Revision history:
+//      04/11/2024 -- 
+//*******************************************************************
+// include files
+#include <iostream>		// cout and cin
+#include <iomanip>		// manipulators like setprecision
+#include <fstream>
+#include <cmath>                // Contains the constant value like pi
+using namespace std;		// we need this when .h is omitted
+//*********************** main ******************************
+int
+main (void)
+{
+  double z0 = 20; // 20nm. This value is explained in the paper.
+  double R0 = 25; // 25nm. This value is explained in the paper.
+  ofstream out_value_of_z ("height_profile.dat");
+  out_value_of_z << "x" << "                 " << "y" << "                   " << "z-Growth" << endl;
+  for (int i = 0; i <=100; i += 1)
+    {
+      double x = i;
+      double y = i;
+      double z = z0 *  exp((-((x * x) + (y * y))) / (2 * (R0 * R0)));
+      out_value_of_z << scientific << setprecision (4) << x << "        " << y << "         "  << z << endl;
+    } 
+  out_value_of_z.close();
+
+  return (0);
+}

@@ -1,0 +1,95 @@
+//  file: Actin_Growth_Model.cpp:  
+//
+//  Test program for the calculation of the growth profile of actin over
+//  time, which plays an important role in the growth of clathrin coated
+//  pits.                                                                   
+//
+//  Programmer:  Cristopher Thompson  thompson.3962@osu.edu
+//
+//  Revision history:
+//      04/11/2024 -- 
+//
+//
+//*******************************************************************
+
+// include files
+#include <iostream>		// cout and cin
+#include <iomanip>		// manipulators like setprecision
+#include <fstream>
+#include <cmath>                // Contains the constant value like pi
+using namespace std;		// we need this when .h is omitted
+
+//*********************** main ******************************
+int
+main (void)
+{
+  ofstream out_value ("dataset.dat");
+  ofstream out_value_of_R ("RadiusandAlpha.dat");
+  ofstream out_value_of_beta ("Beta.dat");
+  double pi = M_PI;
+  //double z0 = 20; // 20nm. This value is explained in the paper.
+  double R0 = 25; // 25nm. This value is explained in the paper. 
+
+  for (int t = 0; t <=10; t += 0.5)
+    { 
+      // Dependence of the actin polymerization factor, alpha, on the radial coordinate R.
+      //Creating a dataset of Radius values from 1 to 100.
+      out_value_of_R << "r" << "    " << "alpha" << endl;
+      for (int i = 0; i <=100; i += 1)
+	{
+	  double alpha = ((1/pi)*atan((i - R0)/0.1*R0) + 0.5) * ((1/pi)*atan((i - R0)/0.1*R0) + 0.5);
+	  out_value_of_R << i << "   " << alpha << endl;
+	} 
+      out_value_of_R.close();
+
+      // Creates an array of numbers from 1 to 100 for the x and y positions
+      const int N = 100; // Size of the array
+      int arr_for_x[N];
+      for (int i = 0; i < 100; ++i) 
+	{
+	  arr_for_x[i] = i + 1;
+	}
+
+      int arr_for_y[N];
+      for (int i = 0; i < 100; ++i) 
+	{
+	  arr_for_y[i] = i + 1;
+	}
+
+      // Dependence of the actin polymerizatin factor on the stress of the cauchy stress. i.e. gamma
+      out_value_of_beta << "x" << "y" << "beta" << endl;
+      for (int q = 0; q <=100; q += 1)
+	{
+	  double beta = exp(-(arr_for_y[q]/arr_for_x[q]) * (arr_for_y[q]/arr_for_x[q]));
+	  out_value_of_beta << arr_for_x[q] << "  " << arr_for_y[q] << "   "  << beta
+			    << endl;
+	} 
+      out_value_of_beta.close();
+
+  //Dependence of the actin polymerizatin factor on the stress of the cauchy stress. i.e. gamma
+ 
+  // where
+      double sigma_0 = std::pow(10, 4);
+      double sigma_zz = sigma_0 * 0.5;
+      double eta = 1 + (0.5 * log(0.05) - 1) * ((2 * sigma_zz) - (sigma_0));
+      double gamma = (1/(1 + exp(-2 * eta))) + ( -0.05/(1 + exp(2 * eta)));
+
+  
+      //Equation for baseline growth rate
+      //double growth = (alpha * beta * gamma) / (t);
+      //std::ifstream file("data1.dat");
+
+      out_value << "t     alpha     beta     gamma     eta     growth" << endl;
+
+ 
+      double growth = (alpha * beta * gamma) / (t);
+      out_value << growth << setprecision(6)
+		<< alpha << "  " << beta << "  "
+		<< gamma << "  " << eta << "  "
+		<< endl;
+    } 
+  out_value.close();
+
+  return (0);
+}
+

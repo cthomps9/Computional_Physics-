@@ -1,0 +1,40 @@
+//  file: Actin_Growth_Model.cpp:  
+//
+//  Test program for the calculation of the growth profile of actin over
+//  time, which plays an important role in the growth of clathrin coated
+//  pits.                                                                   
+//
+//  Programmer:  Cristopher Thompson  thompson.3962@osu.edu
+//
+//  Revision history:
+//      04/11/2024 -- created from spline_function2_test.cpp and the
+//                   Spline class in GslSpline.h,cpp
+//
+//  Notes:
+//   * uses the GSL interpolation functions (see online documentation) 
+//
+//*******************************************************************
+
+// include files
+#include <iostream>		// cout and cin
+#include <iomanip>		// manipulators like setprecision
+#include <cmath>                // Contains the constant value like pi
+using namespace std;		// we need this when .h is omitted
+
+#include "GslSpline.h"  // Header file for the GSL Spline class
+
+//*********************** main ******************************
+int
+main (void)
+{
+  double pi = M_PI;
+  double z0 = 20; // 20nm. This value is explained in the paper.
+  double R0 = 25; // 25nm. This value is explained in the paper. 
+  
+  z_of_x_y = z0 * exp(-((x*x) + (y*y)/(2 *(R0*R0))));
+  
+  alpha = ((1/pi)atan((R - R0)/0.1*R0) + 0.5) * ((1/pi)atan((R - R0)/0.1*R0) + 0.5);
+  beta = exp(-(y/x) * (y/x));
+  return (0);
+}
+

@@ -1,0 +1,87 @@
+//  file: Actin_Growth_Model.cpp:  
+//
+//  Test program for the calculation of the growth profile of actin over
+//  time, which plays an important role in the growth of clathrin coated
+//  pits.                                                                   
+//
+//  Programmer:  Cristopher Thompson  thompson.3962@osu.edu
+//
+//  Revision history:
+//      04/05/2024 -- 
+//
+//
+//*******************************************************************
+// include files
+#include <iostream>		// cout and cin
+#include <iomanip>		// manipulators like setprecision
+#include <fstream>
+#include <vector>
+#include <cmath>                // Contains the constant value like pi
+using namespace std;		// we need this when .h is omitted
+//*********************** main ******************************
+int
+main (void)
+{
+  ofstream out_value ("dataset.dat");
+  out_value << "t            alpha       beta        gamma       eta         growth" << endl;
+  ifstream fileRA("RadiusandAlpha.dat");
+  //The code below picks out the fourth value in the second column
+  std::string line;
+  for (int i = 0; i <4; ++i)
+    { 
+      std::getline(fileRA, line); // reading a row and stores in a variable called "line"
+    }
+  std::istringstream ss(line);
+  double col2; // Assuming the second column contains double values
+  for (int i = 0; i < 2; ++i) 
+    {
+      ss >> col2; // Extract the next value from the second column
+    }
+      
+  // Now you have the fourth value from the second column
+  double alpha = col2;
+  std::cout << "Fourth value in the second column: " << alpha << std::endl;
+  ifstream fileB("Beta.dat");
+  //The code below picks out the fourth value in the third column
+  for (int i = 0; i <4; ++i)
+    { 
+      std::getline(fileB, line); // reading a row and stores in a variable called "line"
+    }
+  //std::istringstream ss2(line); // treat ss2 simliar as you would for reading in a file.
+  ss.seekg(0);
+  ss.str(line); // adds a new line
+  double col3; // Assuming the third column contains double values
+  cout << ss.str() << endl; 
+  for (int i = 0; i < 3; ++i) 
+    {
+      ss >> col3; // Extract the next value from the third column
+      cout << col3 << endl;
+    }
+      
+  // Now you have the fourth value from the third column
+  double beta = col3;
+  std::cout << "Fourth value in the third column: " << beta << std::endl;
+
+  for (int q = 1; q <=10; q += 1)
+    { 
+      double t = q; //time variable
+      //Dependence of the actin polymerizatin factor on the stress of the cauchy stress. i.e. gamma
+ 
+      // where
+      double sigma_0 = std::pow(10, 4);
+      double sigma_zz = sigma_0 * 0.5;
+      double eta = 1 + (0.5 * log(0.05) - 1) * ((2 * sigma_zz) - (sigma_0));
+      double gamma = (1/(1 + exp(-2 * eta))) + ( -0.05/(1 + exp(2 * eta)));
+
+      //Equation for baseline growth rate
+      double growth = (alpha * beta * gamma) * (t);
+      out_value << scientific << setprecision (4)
+		<< t << "   " << alpha << "  " 
+		<< beta << "  " << gamma << "  "
+		<< eta << "  " << growth << endl;
+    } 
+  out_value.close();
+
+  return (0);
+}
+
